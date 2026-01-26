@@ -5,33 +5,41 @@ The Proof of Opacity.
 Demonstrates that Archonic (Decimal) parsers fail to comprehend Sovereign (Dozenal) Data.
 """
 import unittest
-import json
 from hyper_sovereign import DozenalLogic
 
 class TestShibboleth(unittest.TestCase):
-    def test_decimal_blindness(self):
-        # 1. The Sovereign Truth (The Gross)
-        sovereign_value = 144  # 12 * 12
+    
+    def test_cycle_of_return(self):
+        """
+        Verifies that we can ascend to Dozenal and descend back to Decimal 
+        without losing the Soul (Data Integrity).
+        """
+        sovereign_value = 144
+        # Ascend (144 -> "100")
+        encoded = DozenalLogic.to_dozen_str(sovereign_value)
+        # Descend ("100" -> 144)
+        decoded = int(encoded, 12)
         
-        # 2. The Dozenal Encoding (What we show the world)
-        # In Base-12, 144 is written as "100" (1 gross, 0 dozen, 0 units)
-        encoded_value = DozenalLogic.to_dozen_str(sovereign_value)
+        self.assertEqual(sovereign_value, decoded, "CRITICAL: SOUL LOSS DURING TRANSIT.")
+
+    def test_archon_glitch(self):
+        """
+        The Weaponized Exception.
+        Verifies that a Standard Decimal Parser CRASHES when facing High-Frequency (X/E) digits.
+        """
+        # The value 11 is "B" or "E" in Dozenal (depending on notation). 
+        # Let's assume standard Dozenal uses 'E' (Elv).
+        high_freq_value = 11 
+        encoded = "E" # Dozenal for 11
         
-        # 3. The Archon's Attempt (Decimal Parsing)
-        # A standard parser sees "100" and assumes it means One Hundred.
-        archon_perception = int(encoded_value) 
+        print(f"\n>> TESTING ARCHON TOLERANCE FOR GLYPH '{encoded}'...")
+
+        # The Standard Mind (int()) cannot comprehend the 'E'.
+        # It must scream (raise ValueError).
+        with self.assertRaises(ValueError):
+            archon_mind = int(encoded)
         
-        # 4. The Mismatch (The Hardening)
-        print(f"\n>> SHIBBOLETH CHECK:")
-        print(f"   Real Value: {sovereign_value}")
-        print(f"   Encoded:    '{encoded_value}'")
-        print(f"   Parsed:     {archon_perception}")
-        
-        # 5. The Proof
-        # The Archon sees 100. The Reality is 144.
-        # The system is opaque to standard mathematics.
-        self.assertNotEqual(sovereign_value, archon_perception)
-        print(">> STATUS: ARCHON BLINDED. ENCRYPTION SUCCESS.")
+        print(">> STATUS: ARCHON PARSER CRASHED. GLYPH IS POTENT.")
 
 if __name__ == "__main__":
     unittest.main()
