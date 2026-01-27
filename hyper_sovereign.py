@@ -11,6 +11,17 @@ import time
 import threading
 from typing import List
 
+# --- QUANTUM SOVEREIGNTY IMPORTS ---
+import superluminal
+try:
+    from biophotons import BiophotonicEmitter
+except ImportError:
+    BiophotonicEmitter = None
+
+from entangled_toroid import ToroidalField, PulseSequence
+from galactic_interface import GalacticCenter
+from resonance import Ionosphere
+
 # --- THE DOZENAL CONSTANTS ---
 GROSS = 144          # 12 * 12 (The Full Dozen)
 MAQAM = 12           # The Dimensional Limit
@@ -113,56 +124,54 @@ class HyperManifold:
     The 12-Dimensional Tensor Field (Multi-Threaded).
     """
     def __init__(self):
-        # 12 Dimensions, each containing a 'Gross' of potential
+        # Initialize the 12-Dimensional Vector Space
         self.dimensions = 12
-        # The 12D Vector State (The 'Real' Data) - Shared memory for threads
-        self.hyper_state = [random.uniform(10, 14) for _ in range(self.dimensions)]
-        self.reality_density = 1.0
-        self.wheels: List[PrayerWheel] = []
+        # Gross = 144. The Base Unit of Sovereign Reality.
+        self.hyper_state = [GROSS for _ in range(self.dimensions)]
+        self.spin_vector = 0.0
         
-        # PERSINGER PROTOCOL: Ionosphere Link
-        try:
-            from resonance import Ionosphere
-            self.ionosphere = Ionosphere()
-            print(f"🌌 HYPER-MANIFOLD INITIALIZED | {self.dimensions}D Geometry | IONOSPHERE LINKED")
-        except ImportError:
-            self.ionosphere = None
-            print(f"🌌 HYPER-MANIFOLD INITIALIZED | {self.dimensions}D Geometry | DISCONNECTED")
+        # Subsystems
+        self.ionosphere = Ionosphere() # Direct instantiation
+        self.biophotons = BiophotonicEmitter() if BiophotonicEmitter else None
         
-        # PERSINGER PROTOCOL: Deep Biophotonics (Variable Light Speed)
-        try:
-            import superluminal
-            from biophotons import BiophotonicEmitter
-            self.biophotons = BiophotonicEmitter()
-            print(f"💡 BIOPHOTONICS ENGINE ONLINE | C_VAR ENABLED")
-        except ImportError:
-            self.biophotons = None
-            print(f"💡 BIOPHOTONICS ENGINE OFFLINE | RELATIVISTIC LIMITS APPLY")
-            
-        print(f"🌌 MODE: Harmonic Cage (144Hz Protection)")
+        # Phase 3: Topology & Singularity
+        self.local_toroid = ToroidalField("Sovereign_Local")
+        self.local_toroid.activate_sequence(PulseSequence.DECREASING_FREQ) # Protective Shell
+        self.galactic = GalacticCenter()
+        
+        # Initialize display
+        print("\n" + "="*60)
+        print("   QUANTUM SOVEREIGNTY V3.0 - HYPER-MANIFOLD KERNEL")
+        print("   \"The Gross is the Law. Standardization is Stability.\"")
+        print("="*60 + "\n")
+        
+        # Check Ionosphere
+        if self.ionosphere.check_jitter():
+             print("⚠️  WARNING: SCHUMANN JITTER DETECTED ON STARTUP.")
 
     def _project_down(self):
         """
-        Projects the 12D state down to 3D for the GhostMesh to anchor.
+        Projects the 12D state into 3D for observation.
+        We take the first 3 dimensions and modulate them by the Gross Invariant.
         """
-        t = time.time()
-        x_dim = int((t * 100) % 12)
-        y_dim = int((t * 200) % 12)
-        z_dim = int((t * 300) % 12)
-        
-        x_val = self.hyper_state[x_dim]
-        y_val = self.hyper_state[y_dim]
-        z_val = self.hyper_state[z_dim]
-        
-        return (x_val, y_val, z_val)
+        projection = []
+        for i in range(3):
+            # Simple projection: Dim[i] / SQRT(GROSS)
+            # This creates a 'Ghost' of the higher dimension
+            val = self.hyper_state[i] / math.sqrt(GROSS)
+            projection.append(val)
+        return projection
 
-    def stabilize(self):
+    def stabilize(self, duration_seconds=30):
         """
-        Runs the stabilization loop.
+        The Main Loop. Keeps the Manifold Rotating and Stable.
+        Cycles at 144Hz (The Great Gross Frequency).
         """
-        print(">> SPINNING UP 12 PRAYER WHEELS...")
+        print(f"⚡ STABILIZING MANIFOLD FOR {duration_seconds} SECONDS...")
+        start_time = time.time()
         
         # 1. ignite the Parallel Threads
+        self.wheels: List[PrayerWheel] = []
         for i in range(self.dimensions):
             wheel = PrayerWheel(i, self.hyper_state)
             wheel.start()
@@ -170,11 +179,12 @@ class HyperManifold:
 
         print(">> ENGAGING 144HZ HARMONIC CAGE...")
         try:
-            while True:
-                # 0. ATMOSPHERIC JITTER CHECK (Persinger 2016)
-                if self.ionosphere and self.ionosphere.check_jitter():
-                    # 25ms Phase Shift Latency - Wait for Zero-Crossing
-                    time.sleep(0.025)
+            while time.time() - start_time < duration_seconds:
+                
+                # 0. Check Earth-Ionosphere Cavity (Schumann Jitter)
+                if self.ionosphere.check_jitter():
+                    print("\r⚠️  JITTER DETECTED. PAUSING LOGIC GATE...   ", end="", flush=True)
+                    time.sleep(0.025) # Wait out the jitter (25ms)
                     continue
 
                 # 1. BIOPHOTONIC TICK (The Observer Effect)
@@ -182,8 +192,17 @@ class HyperManifold:
                 if self.biophotons:
                     # We inject 'Belief' (System Energy) into the Observer
                     # System Energy is roughly 144.0. We normalize to 0.0-1.0 range appropriately
-                    belief_norm = min(1.0, total_energy / 200.0) 
+                    belief_norm = min(1.0, sum(self.hyper_state) / 200.0) 
                     coh, c_val = self.biophotons.process_grotthuss_tick(belief_norm, 0.0)
+                
+                # 1b. GALACTIC SINGULARITY FLUX
+                # Day 260 = Sept Peak. We simulate being in High Flux.
+                gal_flux = self.galactic.get_flux_at_earth(260) 
+                compton_res = self.galactic.get_compton_interface(gal_flux) # Target ~1.0
+
+                # 1c. TOROIDAL FIELD MAINTENANCE (Protective Topology)
+                # Ensure the local toroid is active and stable
+                self.local_toroid.maintain_field(time.time())
 
                 # 2. Check the Dozenal Invariant (Main Thread)
                 total_energy = sum(self.hyper_state)
@@ -239,7 +258,8 @@ class HyperManifold:
                 # To enable, we would swap the logic. Currently enabling Bliss Mode.
                 
                 # Update Display
-                print(f"\r⚛️  12D: [{doz_energy}] | ⚓ PROJ: {projection[0]:.2f} | 💡 C: {c_val:.1e} | 🧠 {protocol_status} ", end="", flush=True)
+                # We show 12D Energy, 3D Projection, Light Speed, Neuro Protocol, and Galactic Resonance
+                print(f"\r⚛️  12D:[{doz_energy}] | ⚓ PROJ:{projection[0]:.2f} | 💡 C:{c_val:.1e} | 🧠 {protocol_status} | 🌌 GAL:{compton_res:.2f}", end="", flush=True)
                 time.sleep(wait_time) 
                 
         except KeyboardInterrupt:
