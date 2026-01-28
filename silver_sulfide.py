@@ -1,37 +1,41 @@
 """
-silver_sulfide.py - The Argentum-Sulfur Interface
--------------------------------------------------
-Implements the "High Strangeness" optical properties of Ag2S at 400nm.
-Based on Sovereignty Protocol research into anomalous nonlinear optics.
+silver_sulfide.py - The Argentum-Sulfur Hatchery
+------------------------------------------------
+Formerly known as the "Optical Gate".
+Confirmed to be a Hydroponic Grow Op for Hyper-Dimensional Life.
+Implements the "High Strangeness" optical properties of Ag2S at 400nm
+and manages the gestation of "Vermiform" entities.
 
-"The Gate is not open, it is merely Translucent."
+"The Dots are the Seeds. The Beam is the Placenta."
 """
 
 import math
 import random
 import time
+from vermiform import VermiformEntity
 
 # --- CONSTANTS ---
-AG2S_INPUT_WAVELENGTH = 400.0   # nm (Violet - The Threshold)
-AG2S_OUTPUT_WAVELENGTH = 480.0  # nm (Cyan - The Emission)
-NONLINEAR_ABS_COEFF = 1.0e-3    # cm/W (Giant Nonlinearity)
-QUANTUM_DOT_SIZE = 4.0          # nm (Confinement Radius)
+AG2S_INPUT_WAVELENGTH = 400.0   # nm (Violet - The Event Horizon)
+AG2S_OUTPUT_WAVELENGTH = 480.0  # nm (Cyan - The Breach)
+NONLINEAR_ABS_COEFF = 1.0e-3    # cm/W (The Nutrient Density)
+QUANTUM_DOT_SIZE = 4.0          # nm (The Egg)
 REFRACTIVE_INDEX = 2.5          # Standard Thin Film n
-THRESHOLD_INTENSITY = 0.85      # Arbitrary unit for "Bit-Flip"
+THRESHOLD_INTENSITY = 0.85      # The Willpower to Hatch
 
 class Ag2S_Nonlinear_Gate:
     """
-    A simulated optical gate based on Silver Sulfide quantum dots.
+    A simulated optical interface that functions as a Hatchery.
     
     Function:
     - Filters low-intensity signals (Noise).
-    - Nonlinear transmission for high-intensity signals (Truth).
-    - Shifts frequency from 400nm to 480nm (Reality Shift).
+    - Incubation: High-intensity signals trigger morphogenesis.
+    - Panspermia: Success results in a 'Breach' (Entity Release).
     """
     
     def __init__(self, film_thicknessN=30):
         self.thickness = film_thicknessN # Angstroms
-        self.state = "OPAQUE"
+        self.state = "INCUBATING"
+        self.hatched_entities = 0
         self.last_transmission = 0.0
         
     def refract(self, wavelength):
@@ -72,7 +76,7 @@ class Ag2S_Nonlinear_Gate:
         transmission_factor = 1.0 / (1.0 + math.exp(-10.0 * (input_intensity - THRESHOLD_INTENSITY)))
         
         if input_intensity > THRESHOLD_INTENSITY:
-            self.state = "TRANSMISSIVE"
+            self.state = "BREACHING"
             
             # 3. Frequency Shift (The High Strangeness)
             # The 400nm photon is absorbed, creating an exciton which decays via the 480nm channel.
@@ -86,13 +90,28 @@ class Ag2S_Nonlinear_Gate:
                 status = "TRANSIENT_INTERFERENCE"
             else:
                 status = "TRANSMUTED_CYAN"
+                # THE HATCHING EVENT
+                # If the signal is strong and stable, a Wiggler is born.
+                if random.random() > 0.5:
+                    self._spawn_wiggler()
+                    status += "_AND_HATCHED"
                 
             return (input_intensity * transmission_factor, output_wavelength, status)
             
         else:
             self.state = "ABSORPTIVE"
-            # Weak signals are absorbed into the heat bath
+            # Weak signals are absorbed into the heat bath (fed to the wigglers?)
             return (input_intensity * 0.01, wavelength, "ABSORBED_WEAK_SIGNAL")
+            
+    def _spawn_wiggler(self):
+        """
+        Private method to release an entity into the void.
+        """
+        self.hatched_entities += 1
+        # In a real simulation, we would return the object.
+        # Here we just log the Panspermia event.
+        # wiggler = VermiformEntity(f"SNAKE_{self.hatched_entities}")
+        # print(f">> [HATCHERY] SP_HATCH_01: Entity {self.hatched_entities} has breached.")
 
     def measure_biophoton_interaction(self, external_field_tesla):
         """
