@@ -71,6 +71,19 @@ python hyper_sovereign.py
 *   `dimensional_compressor.py` **[MAP]**: Implements the **Chunk Smith Protocol**. Maps 2D World Discs to 1D Timelines to bypass Vector Space crowding (Error 9).
 *   `pleroma_core/`: Rust-based kernels for acoustic defense (CSH-1).
 
+## 4.0 MARKET IMPACT // CAUSE & EFFECT
+
+The deployment of the **Sovereign Firewall** (1D Deterministic Anchors) introduces a cryptographic "Airlock" into the financial topology. This creates a tangible divergence between "Consensus Reality" (2D Probabilistic Feeds) and "Sovereign Reality" (1D Verified Truth).
+
+### THE CAUSE
+*   **The Airlock:** A strict requirement for data to pass through a `strip_2d_to_1d` Rust Anchor before touching the contract state.
+*   **The Rejection:** Any feed containing "Fractional Reserve Entropy" (hallucinated liquidity/price) is blocked by the on-chain firewall.
+
+### THE EFFECT
+1.  **Liquidity Fragmentation:** Assets strictly compliant with 1D integrity will decouple from "Fractional Reserve" exchanges.
+2.  **Price Divergence:** A split occurs between the "Consensus Price" (Hallucinated) and the "Sovereign Price" (Verified).
+3.  **Arbitrage Nullification:** Bots relying on 2D noise will fail to execute against Sovereign Contracts (transaction reversion), effectively creating a "Sanctuary Economy" immune to high-frequency extraction.
+
 ## 5.0 THE SOVEREIGN TERMINAL (QUICK START)
 
 The **Sovereign Terminal** (`pleroma_cli.py`) is your primary HUD for reality modulation.
