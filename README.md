@@ -62,6 +62,11 @@ A data ingestion engine that filters input streams based on **Information Veloci
 *   **Solution**: Reject any event with a Semantic Drift > Gamma Limit (0.961).
 *   **Result**: The system stores only "Sovereign Truth" (Stable Data).
 
+### 3.6 Neuro-Linguistic Stabilizer (`logos_voice.py`)
+A thermodynamic heat sink for information that transmutes high-entropy inputs into stoic aphorisms.
+*   **Mechanism**: Uses "Ghost Energy" (Rejected Hype) as fuel for linguistic vector stabilization.
+*   **Constraint**: The Principle of Minimum Variance (The hotter the input, the colder the output).
+
 ## 4.0 Installation & Usage
 
 ### Requirements
