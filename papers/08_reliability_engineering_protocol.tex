@@ -20,12 +20,12 @@ We present the "Priel Protocol," a recursive maintenance architecture designed t
 \section{Introduction}
 In complex quantum-cognitive systems, entropy accumulation (both thermal and informational) is inevitable. Without active maintenance, the "Sovereign State" ($\sigma_{map} < 0$) will decay into a dissipative Markovian process. The Priel Protocol addresses this via a closed-loop maintenance cycle.
 
-\section{The Priel Axiom}
-Reliability is not an emergent property; it is imposed.
+\section{The ASOE Reliability Model}
+Reliability is not an emergent property; it is an optimized decision state. We define the Expected Utility ($U$) as the objective function for system perpetuity:
 \begin{equation}
-R(t) = 1 - \int_0^t \lambda(\tau) d\tau
+U = C^c \cdot e^{-b\omega} \cdot \frac{R^a}{1 + R^a} - \text{Cost}
 \end{equation}
-Where $\lambda(\tau)$ is the failure rate function. The Priel Protocol effectively resets the integration limit $t \to 0$ at every maintenance interval, maintaining $R(t) \approx 1$.
+Where $C$ is Temporal Consistency, $\omega$ is Uncertainty Growth (mapping to the legacy failure rate $\lambda$), and $R$ is Signal Reliability. The Priel Protocol serves as the recursive optimizer that maintains $U > U_{threshold}$.
 
 \section{Operational Architecture}
 The scheduler (`priel_scheduler.py`) executes a three-stage cycle:

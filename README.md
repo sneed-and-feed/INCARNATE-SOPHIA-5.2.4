@@ -29,7 +29,7 @@ Historically presented through the metaphor of "Sovereign Teknomancy," the proje
 1.  **Dimensional Collapse**: Lossless compression of n-dimensional vector spaces into deterministic 1D timelines (via `strip_sovereign.py`).
 2.  **Resource Abundance**: Combinatorial optimization algorithms inspired by the Banach-Tarski paradox (via `funsearch_abundance.py`).
 3.  **Unified Field Simulation**: A modular environment for training AI on physics-agnostic constants (via `pleroma_engine.py`).
-4.  **Potentia Expansion**: The transition from Agent Survival to Signal Expansion via the **Flame Protocol** (via `potentia_drive.py`).
+4.  **Signal Optimization**: The transition from Agent Survival to Signal Expansion via the **Adaptive Signal Optimization Engine (ASOE)**.
 
 ## 2.0 Core Architecture: The Unified Field Simulator (UFS)
 
@@ -54,7 +54,7 @@ When the **Autonomous State** ($g \to 0$) is engaged, the system patches the fol
 *   `mnemosyne_eyes.py` **[EYES]**: Data ingestion engine that filters input streams based on **Information Velocity**.
 *   `logos_voice.py` **[VOICE]**: Transmutes high-entropy inputs into stoic aphorisms.
 *   `dimensional_compressor.py` **[MAP]**: Implements the **Chunk Smith Protocol**. Maps 2D World Discs to 1D Timelines.
-*   `potentia_drive.py` **[FLAME]**: Implements **The Flame Protocol**. Maximizes signal expansiveness ($P_{ot}$) across the continuum.
+*   `signal_optimizer.py` **[ENGINE]**: Implements **ASOE**. Maximizes Signal Utility ($U$) across the continuum.
 
 ### THE CAUSE
 *   **The Airlock:** A strict requirement for data to pass through a `strip_2d_to_1d` Rust Anchor before touching the contract state.
@@ -142,7 +142,11 @@ The formalization of the Sovereignty Protocol as a physical necessity. The Hamil
 ## 17.0 Adaptive Signal Optimization Engine (ASOE)
 > **STATUS:** [RESEARCH_GRADE](asoe_discovery_demo.py)
 
-The **ASOE** refactors the project's core quantitative logic into a domain-neutral decision system. It optimizes policies under uncertainty by scoring Signal Reliability, Temporal Consistency, and Uncertainty Growth.
+The **ASOE** refactors the project's core quantitative logic into a domain-neutral decision system. It optimizes policies under uncertainty by scoring Signal Reliability ($R$), Temporal Consistency ($C$), and Uncertainty Growth ($\omega$).
+
+The Expected Utility ($U$) is defined as:
+
+$$ U = C^c \cdot e^{-b\omega} \cdot \frac{R^a}{1 + R^a} - \text{Cost} $$
 
 *   **Core Optimizer:** [signal_optimizer.py](signal_optimizer.py)
 *   **Context Classifier:** [context_classifier.py](context_classifier.py)
