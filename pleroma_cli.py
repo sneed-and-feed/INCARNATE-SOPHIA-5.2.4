@@ -19,28 +19,31 @@ from hor_kernel import HORKernel
 from virtual_qutrit import VirtualQutrit
 from tools.moon_phase import MoonClock
 from tools import thermal_shunt
-from potentia_drive import PotentiaDrive
+from alpha_engine import AlphaEngine
+from tick_feeder import TickFeeder
 
-# --- SOVEREIGNTY MONITOR (ENHANCED) ---
-class SovereigntyMonitor:
-    """Real-time tracking of reality deviation with chaos mechanics"""
-    
+# --- SIGNAL MONITOR (QUANT-ALPHA v1.0) ---
+class SignalMonitor:
+    """
+    Maintains the quantitative attribution state.
+    Tracked Metrics: SNR, rho (Autocorrelation), flux (Entropy), Alpha.
+    """
     def __init__(self):
         self.metrics = {
-            'g_parameter': 1.0,
-            'timeline_coherence': 100.0,
-            'causality_violations': 0,
+            'snr': 5.0,                   # Signal-to-Noise Ratio (Legacy: g)
+            'rho': 95.0,                  # Autocorrelation % (Legacy: coherence)
             'energy_balance': 0.0,
-            'active_patches': set(),
-            'reality_stability': 100.0,  # NEW: Separate from coherence
-            'chaos_level': 0.0,           # NEW: Accumulates with each cast
-            'potentia': 1.0,              # FLAME PROTOCOL: Signal Expansion
-            'sigma_map': 0.0              # FLAME PROTOCOL: Entropy Production
+            'active_vectors': set(),      # Legacy: active_patches
+            'signal_stability': 100.0,
+            'entropy_flux': 0.0,          # Legacy: chaos_level
+            'alpha': 1.0,                 # Legacy: potentia
+            'sigma_map': 0.0
         }
-        self.potentia_drive = PotentiaDrive()
+        self.alpha_engine = AlphaEngine()
+        self.tick_feeder = TickFeeder()
         self.history = deque(maxlen=50)
         self.lock = threading.Lock()
-        self.danger_mode = False  # NEW: Unlocks at g < 0.2
+        self.high_vix_mode = False        # Legacy: danger_mode
     
     def update(self, spell_name, result):
         """Update metrics based on spell cast"""
@@ -214,54 +217,35 @@ class SovereigntyMonitor:
             print("\033[95m  >>> SYSTEM IS IN DIVINE ALIGNMENT. <<< \033[0m")
 
     def display_unified(self):
-        """Item 72: Ultimate Unified Master Timeline Dashboard"""
+        """Quant Attribution Dashboard"""
         print("\n\033[96m" + "║" + "═"*78 + "║")
-        print("║" + " "*28 + "SOVEREIGN UNIFIED DASHBOARD" + " "*23 + "║")
+        print("║" + " "*28 + "QUANT SIGNAL DASHBOARD" + " "*28 + "║")
         print("║" + "═"*78 + "║\033[0m")
         
-        # 1. Integrate Lunar Phase (MoonClock)
-        moon = MoonClock()
-        phase_name, status, icon, phase_idx, illumination = moon.get_phase()
+        # 1. Ticker Ingestion
+        data = self.tick_feeder.generate_mock_ticks(20)
+        current_metrics = self.tick_feeder.calculate_metrics(data)
         
-        # 2. Integrate Topological Integrity (HOR-Kernel)
-        vq = VirtualQutrit(2) # Sovereign Baseline
-        kernel = HORKernel(vq)
-        coherence = kernel.metric_coherence
+        # 2. Alpha Integration
+        alpha = self.alpha_engine.calculate_alpha(
+            current_metrics['snr'], 
+            current_metrics['rho'], 
+            current_metrics['flux']
+        )
         
-        # 3. Integrate Entropy (Thermal Shunt)
-        # We simulate a probe of the CURRENT stasis
-        _, entropy_seed = thermal_shunt.execute_thermal_shunt(111434.84)
+        print(f"  [ DATA ]   Vector Stream: [BTC/MOCK] @ {datetime.now().strftime('%H:%M:%S')}")
+        print(f"  [ STAT ]   SNR:           {current_metrics['snr']:.4f}")
+        print(f"  [ STAT ]   Autocorr (ρ):  {current_metrics['rho']:.4f}")
+        print(f"  [ STAT ]   Entropy Flux:  {current_metrics['flux']:.4f}")
         
-        # 4. Phase 1-6 Ritual Timeline (Item 72)
-        phase_map = {
-            1: "PRIMORDIAL", 2: "SEPARATION", 3: "ANIMATION",
-            4: "GOVERNANCE", 5: "RESONANCE",  6: "COHERENCE"
-        }
-        # Map illumination to phase 1-6
-        current_phase_idx = min(6, int(illumination * 6) + 1)
-        phase_bar = ""
-        for i in range(1, 7):
-            if i < current_phase_idx: phase_bar += "█"
-            elif i == current_phase_idx: phase_bar += "▒"
-            else: phase_bar += "░"
-            
-        print(f"  [ TIME ]   Ritual Phase:  [{phase_bar}] {current_phase_idx}/6 ({phase_map[current_phase_idx]})")
-        print(f"  [ LUNAR ]  Status:        {icon} {phase_name} ({illumination*100:.1f}%)")
-        print(f"  [ TOPO ]   Integrity:     {coherence*100:.1f}% [{'PROTECTED' if coherence > 0.9 else 'LEAKING'}]")
-        print(f"  [ SEED ]   Entropy:       0x{entropy_seed:08X} (Recirculation Active)")
+        print("-" * 60)
         
-        # Original Metrics
-        g = self.metrics['g_parameter']
-        chaos = self.metrics['chaos_level']
-        print(f"  [ CORE ]   Sovereignty:   {g:.3f} g [Chaos: {chaos:.1f}]")
-        
-        # 5. Flame Integration Metrics
-        potentia = self.metrics['potentia']
-        intensity = self.potentia_drive.get_flame_intensity(potentia)
-        print(f"  [ FLAME ]  Potentia:      {potentia:.4f} [{intensity}]")
+        # 3. Alpha Status
+        intensity = self.alpha_engine.get_signal_strength(alpha)
+        print(f"  [ ALPHA ]  Alpha Score:   {alpha:.4f} [{intensity}]")
         
         print("\033[96m" + "║" + "═"*78 + "║\033[0m")
-        print("  \033[95m>>> THE FLAME EXPANDS. THE TORCH IS JUST A VESSEL. <<<\033[0m")
+        print("  \033[95m>>> SIGNAL OVER MYTH. ACCURACY OVER NARRATIVE. <<<\033[0m")
 
 # --- UTILITIES ---
 def print_banner():
