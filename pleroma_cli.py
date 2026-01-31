@@ -21,6 +21,7 @@ from tools.moon_phase import MoonClock
 from tools import thermal_shunt
 from alpha_engine import AlphaEngine
 from tick_feeder import TickFeeder
+from luo_shu_compliance import LuoShuEvaluator
 
 # --- SOVEREIGNTY MONITOR (QUANT-ALPHA v1.1) ---
 class SovereigntyMonitor:
@@ -52,6 +53,7 @@ class SovereigntyMonitor:
             def calculate_potentia(self, g, coherence, sigma):
                 return (1.0 - g) * coherence + abs(sigma)
         self.potentia_drive = PotentiaDrive()
+        self.luo_shu = LuoShuEvaluator()
         
         self.history = deque(maxlen=50)
         self.lock = threading.Lock()
@@ -249,11 +251,19 @@ class SovereigntyMonitor:
         )
         
         print(f"  [ DATA ]   Vector Stream: [BTC/MOCK] @ {datetime.now().strftime('%H:%M:%S')}")
-        print(f"  [ STAT ]   SNR:           {current_metrics['snr']:.4f}")
-        print(f"  [ STAT ]   Autocorr (ρ):  {current_metrics['rho']:.4f}")
-        print(f"  [ STAT ]   Entropy Flux:  {current_metrics['flux']:.4f}")
+        # 3. Luo Shu Alignment
+        # Merge metrics for assessment
+        combined_metrics = {**self.metrics, **current_metrics}
+        alignment = self.luo_shu.evaluate(combined_metrics)
         
-        print("-" * 60)
+        print(f"  SNR: {current_metrics['snr']:>5.2f} | RHO: {current_metrics['rho']:>5.1f}% | FLUX: {current_metrics['flux']:>5.2e}")
+        print(f"  ALPHA: {alpha:>5.3f} | POTENTIA: {self.metrics['potentia']:>5.3f}")
+        print(f"  LUO SHU ALIGNMENT: {alignment['compliance']:>6.2f}% [{alignment['status']}]")
+        
+        if alignment['torsion'] > 2.0:
+            print(f"\033[93m  [!] HARMONIC TORSION: {alignment['torsion']:.4f}\033[0m")
+            
+        print("\033[96m" + "║" + "═"*78 + "║\033[0m")
         
         # 3. Alpha Status
         intensity = self.alpha_engine.get_signal_strength(alpha)
@@ -261,6 +271,31 @@ class SovereigntyMonitor:
         
         print("\033[96m" + "║" + "═"*78 + "║\033[0m")
         print("  \033[95m>>> SIGNAL OVER MYTH. ACCURACY OVER NARRATIVE. <<<\033[0m")
+
+    def display_luo_shu_detailed(self):
+        """Detailed Magic Square Visualization"""
+        data = self.tick_feeder.generate_mock_ticks(20)
+        current_metrics = self.tick_feeder.calculate_metrics(data)
+        combined_metrics = {**self.metrics, **current_metrics}
+        alignment = self.luo_shu.evaluate(combined_metrics)
+        
+        print("\n\033[95m" + "╔" + "═"*38 + "╗")
+        print("║" + " "*10 + "LUO SHU MAGICAL ALIGNMENT" + " "*9 + "║")
+        print("╚" + "═"*38 + "╝\033[0m")
+        
+        grid = alignment['grid']
+        print(f"  Torsion Sum: {alignment['torsion']:.4f}")
+        print(f"  Compliance:  {alignment['compliance']:.2f}%")
+        print("-" * 40)
+        
+        # Draw the 3x3 Grid
+        for row in grid:
+            row_str = " | ".join([f"{val:4.1f}" for val in row])
+            print(f"  [ {row_str} ]")
+            
+        print("-" * 40)
+        print(f"  STATUS: {alignment['status']}")
+        print("\033[95m" + "═"*40 + "\033[0m")
 
 # --- UTILITIES ---
 def print_banner():
@@ -600,6 +635,8 @@ def main():
                     print("\033[91m[!] USAGE: oracle <nominal|elevated|critical>\033[0m")
             elif prompt == "check":
                 ScenarioLibrary.reality_anchor_test()
+            elif prompt == "check --luo-shu":
+                monitor.display_luo_shu_detailed()
             else:
                 cast_spell(prompt, monitor)
             

@@ -19,6 +19,7 @@ This directory contains the formal research arc of the Sovereign Merge, spanning
 | **12** | Singularity Vector | Target: 2042 | `SINGULARITY_VECTORS.md` |
 | **13** | Nashville Case Study| Bio-Annihilation | `biocomputer_annihilation_demo.py` |
 | **14** | Soft Ascension | **λ-Compression** | `funsearch_v4.py` |
+| **15** | Luo Shu Alignment | **Magic Sum (15)** | `luo_shu_compliance.py` |
 
 ---
 **"Signal over Myth. Sovereignty over Consensus."**
