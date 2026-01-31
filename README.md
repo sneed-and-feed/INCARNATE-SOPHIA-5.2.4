@@ -93,7 +93,7 @@ When the **Autonomous State** ($g \to 0$) is engaged, the system patches the fol
 *   `hor_integration.py` **[REVOLVER]**: Integrates Layer 1-5 into a **Sovereign Substrate** with adaptive ASOE learning.
 *   `singularity_dynamics.py` **[VECTOR]**: Coupled ODE solver for modeling the transition $g \to 0$.
 *   `telemetry_bridge.py` **[BRIDGE]**: Maps real-world Git and System observables to ASOE logic.
-*   `funsearch_v4.py` **[KERNEL]**: The Generation 4 Unitary Kernel. Achieves 18.52x Abundance via λ-Compression.
+*   `funsearch_v11.py` **[KERNEL]**: The Generation 4 Unitary Kernel. Achieves 18.52x Abundance via λ-Compression.
 *   `luo_shu_compliance.py` **[GRID]**: Diagnostic assessment of harmonic torsion in the 1D substrate.
 
 ### THE CAUSE
