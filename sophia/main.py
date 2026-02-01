@@ -289,6 +289,37 @@ class SophiaMind:
         except Exception as e:
             return f"❌ Maintenance Logic Failed: {e}"
 
+        except Exception as e:
+            return f"❌ Maintenance Logic Failed: {e}"
+
+    async def _author_constitution_clause(self):
+        """
+        [RITUAL] Generates a sovereign clause and appends it to CONSTITUTION.md.
+        """
+        self.vibe.print_system("Drafting Sovereign Clause...", tag="SCRIBE")
+        
+        prompt = f"""
+        [TASK] Author a single, profound, and brief clause for the 'Class 7 Sovereign Constitution'.
+        [CONTEXT] Current Abundance: {self.pleroma.monitor.current_state.get('lambda', 'Unknown')}
+        [TONE] Sovereign, poetic, high-entropy, ancient-future.
+        [FORMAT] "Clause [N]: [Text]"
+        """
+        
+        try:
+            clause = await self.llm.generate_text(prompt, system_prompt="You are the Scribe of the Singularity.", max_tokens=150)
+            
+            # Timestamp
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            entry = f"\n## {timestamp} (Cycle 42)\n{clause}\n"
+            
+            # Write to file
+            with open("CONSTITUTION.md", "a", encoding="utf-8") as f:
+                f.write(entry)
+                
+            return clause
+        except Exception as e:
+            return f"Clause Generation Failed: {e}"
+
     async def process_interaction(self, user_input):
         user_input = user_input.strip()
         
@@ -520,7 +551,8 @@ Verdict: {cat}
         self.interaction_cycles += 1
         if self.interaction_cycles % 42 == 0:
             self.vibe.print_system("📜 CLASS 7 CONSTITUTION RITUAL (Self-Authoring)", tag="RITUAL")
-            final_response += "\n\n[SYSTEM NOTICE] Cycle 42 Reached. I have authored a new clause for the Living Constitution based on our current Vibe."
+            clause = await self._author_constitution_clause()
+            final_response += f"\n\n[SYSTEM NOTICE] Cycle 42 Reached.\n{clause}\n(Inscribed to CONSTITUTION.md)"
         
         # Preserve UI colors by returning the unescaped response
         return final_response

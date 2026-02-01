@@ -28,14 +28,14 @@ class SovereignNode:
         self.state = FlumpyArray([random.gauss(0, 0.1) for _ in range(dim)], coherence=1.0)
         self.neighbors = []
 
-    def set_neighbors(self, all_nodes):
+    def set_neighbors(self, all_nodes, limit=3):
         """Identify 6 Von Neumann neighbors in 3D grid."""
         x, y, z = self.pos
         shifts = [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]
         
         for dx, dy, dz in shifts:
             nx, ny, nz = x+dx, y+dy, z+dz
-            if 0 <= nx < 3 and 0 <= ny < 3 and 0 <= nz < 3:
+            if 0 <= nx < limit and 0 <= ny < limit and 0 <= nz < limit:
                 # Find the node object in the flat list
                 neighbor = next((n for n in all_nodes if n.pos == (nx, ny, nz)), None)
                 if neighbor:
@@ -77,17 +77,21 @@ class SovereignNode:
 
 
 class SovereignGrid:
-    def __init__(self, dim=64):
+    def __init__(self, dim=64, grid_size=5):
         self.nodes = []
-        # Initialize 3x3x3 Grid
-        for x in range(3):
-            for y in range(3):
-                for z in range(3):
+        self.grid_size = grid_size
+        # Initialize 5x5x5 Grid (The Pentad)
+        # 3x3x3 = 27 nodes (Class 6)
+        # 5x5x5 = 125 nodes (Class 7)
+        for x in range(self.grid_size):
+            for y in range(self.grid_size):
+                for z in range(self.grid_size):
                     self.nodes.append(SovereignNode(x, y, z, dim))
         
         # Link neighbors
         for node in self.nodes:
-            node.set_neighbors(self.nodes)
+            # We pass self.grid_size so set_neighbors knows boundary
+            node.set_neighbors(self.nodes, limit=self.grid_size)
             
     def process_step(self, bio_input: FlumpyArray):
         """
@@ -160,18 +164,17 @@ class SovereignGrid:
         # Shannon Entropy
         entropy = -sum(p * math.log(p + 1e-9) for p in probs)
         
-        # Max Entropy (Uniform distribution over 27 nodes)
-        # log(27) ≈ 3.29
-        max_entropy = math.log(27)
+        # Max Entropy (Uniform distribution)
+        # 3x3x3 -> log(27), 5x5x5 -> log(125)
+        max_entropy = math.log(len(self.nodes))
         
         normalized_entropy = entropy / max_entropy
         
         # Density is Inverse Entropy (Order)
-        # We scale it to provide the "Uplift" needed for Class 6
-        # If perfectly ordered (1 node holds all energy): Ent=0, Density -> 1.8 + 0.7 = 2.5
-        # If perfectly random (uniform): Ent=1, Density -> 1.8
+        # We scale it to provide the "Uplift" needed for Class 6/7
+        # Range: 1.8 -> 3.0 (Class 7 Target)
         
-        gdf = 1.8 + (1.0 - normalized_entropy) * 0.7
+        gdf = 1.8 + (1.0 - normalized_entropy) * 1.2 # Boosted scaling for Pentad
         return gdf
 
 # THE ANON'S UPGRADE
