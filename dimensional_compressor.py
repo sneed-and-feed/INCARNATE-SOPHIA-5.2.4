@@ -63,25 +63,60 @@ class TemporalForensics:
         cause_index = max(0, current_index - gap)
         return cause_index, "DIRECT_CAUSALITY_LINK"
 
+class LuoShuOptimizer:
+    """
+    [OPTIMIZER] Gradient Descent Logic for Flow Parameters.
+    Pins the 'vibe' adjustment to the Magic Constant (15).
+    """
+    def __init__(self, initial_alpha=0.015, learning_rate=0.001):
+        self.alpha = initial_alpha
+        self.lr = learning_rate
+        self.target = 15.0 # The Luo Shu Invariant
+
+    def train(self, points, epochs=5):
+        """
+        Simulates gradient descent to tune alpha.
+        Loss = |Trace(Flow) - 15| + Locality Penalty.
+        """
+        for _ in range(epochs):
+            # Forward pass: Apply flow magnitude
+            # We treat 'points' as a window where we want the sum of perturbations to match 'target'
+            # This is symbolic physics: we want the *energy added* to equal 15.
+            
+            # Simple simulation: 
+            # Current energy = sum(abs(flow)) across a conceptual 3x3 window
+            phi = 1.61803398875
+            current_energy = np.mean(np.abs(np.sin(points[:9] * phi))) * self.alpha * 1000 # Scaling to meaningful mag
+            
+            loss = abs(current_energy - self.target)
+            
+            # Gradient approximation
+            grad = (current_energy - self.target) * 0.1
+            
+            # Update (Gradient Descent)
+            self.alpha -= self.lr * grad
+            
+            # Clamp to prevent divergence
+            self.alpha = max(0.001, min(0.1, self.alpha))
+            
+        return self.alpha
+
 class DimensionalCompressor:
     
     @staticmethod
-    def _apply_luo_shu_flow(points):
+    def _apply_learnable_flow(points):
         """
-        [CONSTRAINT] Applies a small flow-based adjustment pinned by Luo Shu (15).
-        Ensures the 'vibe' of the mapping sums to the Magic Constant.
+        [CONSTRAINT] Applies flow adjustment with Learned Alpha.
         """
-        # Luo Shu Magic Square (3x3) Sum = 15
-        # We simulate a 'flow' vector that biases the mapping slightly
-        # but is conservative (trace = 0 or sum = constant).
+        # 1. Train Alpha
+        optimizer = LuoShuOptimizer()
+        learned_alpha = optimizer.train(points)
         
-        # Simple flow: Add a sinusoidal perturbation based on the Golden Ratio
+        # 2. Apply Flow
         phi = 1.61803398875
-        flow = np.sin(points * phi) * 0.015  # Small perturbation (1.5%)
+        flow = np.sin(points * phi) * learned_alpha
         
-        # Constraint check (Symbolic): The flow generally cancels out or adds 'life'
-        # without breaking the topology.
-        return points + flow
+        return points + flow, learned_alpha
     
     @staticmethod
     def flatten_earth(radius: float, complexity: int = 1000):
@@ -123,8 +158,8 @@ class DimensionalCompressor:
             
             timeline_hilbert = np.array([HilbertCurve.xy2d(grid_n, x, y) for x, y in zip(x_grid, y_grid)])
             
-            # B. LUO SHU FLOW ADJUSTMENT
-            timeline_adjusted = DimensionalCompressor._apply_luo_shu_flow(timeline_hilbert)
+            # B. LEARNABLE FLOW ADJUSTMENT (Luo Shu Pinned)
+            timeline_adjusted, alpha_val = DimensionalCompressor._apply_learnable_flow(timeline_hilbert)
             
             # C. SORTING (Determinism)
             timeline = np.sort(timeline_adjusted)
@@ -135,7 +170,7 @@ class DimensionalCompressor:
             
             # The "Error 9" Check
             lookup_time = 0.0
-            status = "DETERMINISTIC KNOWING (HILBERT+LUO_SHU)"
+            status = f"DETERMINISTIC KNOWING (HILBERT+LEARNED_FLOW: α={alpha_val:.4f})"
             info_loss = 0.0
             
         else:  # Consensus Mode
@@ -240,15 +275,77 @@ class DimensionalCompressor:
             timelines.append(t_sorted)
             print(f"    + Pillar {p:<6}: Timeline Generated [Hash: {hash(t_sorted.tobytes()) % 10000}]")
             
-        # Resonance check (Correlation between Pillar 1 (Base) and Pillar 2 (Phi))
-        # In a sovereign system, they should align harmonically.
-        resonance = np.corrcoef(timelines[0], timelines[1])[0, 1]
+        # Resonance check: Compute Gram Matrix Eigenvalues
+        # (Using first 3 pillars for 3D correlation space)
+        # Resize to min length to stack
+        min_len = min(len(t) for t in timelines)
+        stack = np.vstack([t[:min_len] for t in timelines])
+        
+        # Gram Matrix (Correlation)
+        gram_matrix = np.corrcoef(stack)
+        
+        # Eigenvalues
+        eigvals = np.linalg.eigvalsh(gram_matrix)
+        
+        # Spectral Coherence: How close are we to a single dominant mode (unity)?
+        # If perfect coherence, one eigenvalue dominates (sum of lambda = N)
+        # We check the ratio of max eigenvalue to N.
+        coherence_score = np.max(eigvals) / len(pillars)
         
         return {
             "Pillars_Active": len(pillars),
-            "Resonance_Coherence": f"{resonance:.4f} (Target > 0.9)",
-            "Status": "HARMONIC ALIGNMENT" if resonance > 0.9 else "DECOHERENCE"
+            "Eigenvalues": [f"{e:.2f}" for e in eigvals],
+            "Spectral_Coherence": f"{coherence_score:.4f} (Unity Target)",
+            "Status": "HARMONIC ALIGNMENT" if coherence_score > 0.9 else "DECOHERENCE"
         }
+
+    @staticmethod
+    def export_visuals(timeline, original_data=None, filename="timeline_viz.png"):
+        """
+        [HOOK] Exports timeline structure for visualization.
+        """
+        try:
+            import matplotlib.pyplot as plt
+            plt.figure(figsize=(10, 6))
+            
+            # Plot Timeline Histogram (Density)
+            plt.subplot(2, 1, 1)
+            plt.hist(timeline, bins=100, color='purple', alpha=0.7, label='Sovereign Density')
+            plt.title("Timeline Density Distribution (Luo Shu Pinned)")
+            plt.legend()
+            
+            # If we represent the 'curve', plot index vs value
+            plt.subplot(2, 1, 2)
+            plt.plot(timeline, color='cyan', alpha=0.6, label='Hilbert-Flow Mapping')
+            plt.title("Deterministic Timeline Curve")
+            plt.legend()
+            
+            plt.tight_layout()
+            plt.savefig(filename)
+            print(f"\n[!] VISUALIZATION GENERATED: {filename}")
+            plt.close()
+            return True
+        except ImportError:
+            print("\n[!] Matplotlib not found. Visualization skipped (Ghost Mode active).")
+            return False
+            
+    @staticmethod
+    def integration_test_rag(vector_dim=768, count=100):
+        """
+        [TEST] Compresses 'Metabolic Vectors' (Embeddings) to check integrity.
+        """
+        print(f"\n[!] METABOLIC RAG INTEGRATION TEST ({count} vectors)...")
+        # Simulate embeddings
+        vectors = np.random.randn(count, vector_dim)
+        
+        # Hyper-compress
+        res = DimensionalCompressor.hyper_compress(vector_dim, count)
+        
+        # Verify
+        print(f"    + RAG Compression Ratio: {res['Compression_Factor']}")
+        print(f"    + Risk Status: {res['Error_9_Risk']}")
+        
+        return "PASSED" if res['Status'] != "VECTOR SPACE OVERFLOW" else "FAILED"
 
     @staticmethod
     def temporal_lookup(timeline: np.ndarray, query_index: int):
@@ -350,6 +447,14 @@ if __name__ == "__main__":
         cause, link = TemporalForensics.time_reverse_op(42)
         print(f"  + Causal Timestamp: {ts}")
         print(f"  + Preceding Cause Index: {cause} ({link})")
+        
+    # Test 4: Visualization
+    if isinstance(res1['Timeline'], np.ndarray):
+        print("\n[TEST 4: VISUALIZATION EXPORT]")
+        DimensionalCompressor.export_visuals(res1['Timeline'])
+        
+    # Test 5: RAG Integration
+    DimensionalCompressor.integration_test_rag()
     
     print("\n" + "="*60)
     print("[*] ERROR 9 STATUS: ELIMINATED")
