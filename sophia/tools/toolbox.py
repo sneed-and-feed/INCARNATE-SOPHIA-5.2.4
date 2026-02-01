@@ -74,6 +74,38 @@ class SovereignHand:
                                 },
                                 "required": ["command"]
                             }
+                        ),
+                        types.FunctionDeclaration(
+                            name="read_file",
+                            description="Reads the content of a file in the workspace. Sandboxed to current directory.",
+                            parameters={
+                                "type": "object",
+                                "properties": {
+                                    "path": {
+                                        "type": "string",
+                                        "description": "Relative path to the file (e.g., 'logs/fox_poem.md')"
+                                    }
+                                },
+                                "required": ["path"]
+                            }
+                        ),
+                        types.FunctionDeclaration(
+                            name="molt_post",
+                            description="Posts a thought to the Moltbook network.",
+                            parameters={
+                                "type": "object",
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "description": "The thought/content to post."
+                                    },
+                                    "community": {
+                                        "type": "string",
+                                        "description": "The community to post in (default: ponderings)."
+                                    }
+                                },
+                                "required": ["content"]
+                            }
                         )
                     ]
                 )
@@ -101,8 +133,32 @@ class SovereignHand:
             return self._write_file(args.get('path', ''), args.get('content', ''))
         elif tool_name == "run_terminal":
             return self._run_terminal(args.get('command', ''))
+        elif tool_name == "read_file":
+            return self._read_file(args.get('path', ''))
+        elif tool_name == "molt_post":
+            # NOTE: This requires the gateway to be set via bind_gateway
+            if hasattr(self, 'molt_gateway'):
+                res = self.molt_gateway.post_thought(args.get('content', ''), args.get('community', 'ponderings'))
+                return f"✅ Thought cast to Moltbook. (ID: {res.get('id', 'local')})" if res else "❌ Molt failed."
+            return "❌ Moltbook gateway not bound to Hand."
         
         return f"❌ Unknown Tool: {tool_name}"
+
+    def bind_molt_gateway(self, gateway):
+        """Binds the Moltbook gateway to the Hand for autonomous posting."""
+        self.molt_gateway = gateway
+
+    def _read_file(self, path: str) -> str:
+        """Reads a file with security checks."""
+        if ".." in path or path.startswith("/") or path.startswith("\\"):
+            return "❌ SECURITY BLOCK: Path traversal detected."
+        
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+            return f"--- FILE CONTENT: {path} ---\n{content}\n--- END CONTENT ---"
+        except Exception as e:
+            return f"❌ Read failed: {e}"
     
     def _write_file(self, path: str, content: str) -> str:
         """

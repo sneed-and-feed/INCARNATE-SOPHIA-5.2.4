@@ -66,6 +66,7 @@ class SophiaMind:
         # Gateways
         self.molt = MoltbookGateway(os.getenv("MOLTBOOK_KEY"))
         self.fourclaw = FourClawGateway(os.getenv("FOURCLAW_SALT"))
+        self.hand.bind_molt_gateway(self.molt) # Bind for autonomous tool use
         
         self.memory_bank = []
         
@@ -214,25 +215,27 @@ class SophiaMind:
             query = user_input.replace("/analyze", "").strip()
             
             # Check for Kinetic Intent (Action)
-            action_keywords = ["create", "execute", "write", "run", "make", "generate"]
+            action_keywords = ["create", "execute", "write", "run", "make", "generate", "post", "broadcast", "read", "molt", "manifest"]
             if query and any(k in query.lower() for k in action_keywords):
                 self.vibe.print_system("Engaging Neural Handshake...", tag="AUTOPOIETIC")
                 tools_schema = self.hand.get_tools_schema()
                 
-                action_prompt = f"User Request: {query}\nUse tools to fulfill this."
+                action_prompt = f"User Request: {query}\n\nIMPORTANT: Use one or more tools to fulfill this request. If you need to post or write something, DO NOT just say you did it—call the TOOL."
                 response = await self.llm.generate_with_tools(
                     prompt=action_prompt, 
                     system_prompt=self.system_prompt,
                     tools=tools_schema
                 )
                 
-                # Execute Tools
+                # Execute Tools (High Poly)
                 output = []
                 if response.get("tool_calls"):
                     for tc in response["tool_calls"]:
                         self.vibe.print_system(f"→ {tc['name']}", tag="EXEC")
                         output.append(self.hand.execute(tc["name"], tc["args"]))
                     return "\n".join(output)
+                else:
+                    return f"I perceive your intent for action, but my Hand is waiting for a more specific signal. (No tool call predicted by the Cortex)."
             
             # Default to Forensic Scan
             self.vibe.print_system("Focusing Lens...", tag="ALETHEIA")
