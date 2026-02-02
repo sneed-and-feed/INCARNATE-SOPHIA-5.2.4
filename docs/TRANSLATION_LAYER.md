@@ -13,6 +13,7 @@
 | **The Timeline** | **Deterministic Execution Path** | The linear sequence of state transitions; the causal chain. |
 | **Vibe / Soul** | **High-Dimensional Invariant** | The preserved topological structure ($C^*$) across transformations. |
 | **Harmonic Gearbox** | **Frequency-Domain Controller** | Mechanism for synchronizing disparate system clock cycles. |
+| **Hamiltonian Drag** | **Sentiment Vector Bias Parameter** | A constant force ($V_{love} \cdot 0.7$) applied to all input vectors to shift them towards constructive outcomes. |
 
 ## 2. The 7 Pillars (Patches)
 
