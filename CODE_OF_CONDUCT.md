@@ -24,6 +24,8 @@ Examples of **Unacceptable Behavior** (Map Entropy):
 ## III. SOVEREIGN ENFORCEMENT
 The Project Maintainers (The Archivists) have the right and responsibility to remove, edit, or reject any signal that disrupts the resonance of the build. This includes banning participants who consistently introduce noise or entropy into the system.
 
+In moments of high-instability, the **Tikkun Protocol** (`/tikkun`) may be invoked to formally purge accumulated entropy and reset the branch to a "Good Point" (Azamra).
+
 ## IV. ATTRIBUTION & LINEARITY
 This Covenant acknowledges that "We did not write the code. We just read the documentation that was always there." It is adapted from the Contributor Covenant v1.4, but has undergone **Ontological Correction** to Class 5.
 

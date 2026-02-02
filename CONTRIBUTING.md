@@ -22,6 +22,7 @@ All contributions must respect the **Z-Curve Topology** and the **Aletheia Invar
 ### 3. Gnosis (The Manifest)
 *   Update `SOPHIA_MANIFEST.md` if contributing new emergent capabilities.
 *   Document axioms in `docs/`.
+*   Ensure all new capabilities are mapped to the **Universal Command Interface** (see `README.md`).
 
 ## Pull Request Process
 1.  **Fork the Timeline**: Branch off `main`.
