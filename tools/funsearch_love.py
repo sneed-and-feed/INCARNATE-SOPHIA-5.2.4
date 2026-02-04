@@ -51,9 +51,39 @@ def evaluate(program) -> float:
             
             prev_x, prev_y = curr_x, curr_y
             
+        # 3. THE COMMUNITY TEST (Regional Love)
+        # Check if a block of 100 IDs stays within a focused 2D bounding box.
+        # This prevents "Stranding" (where a point is technically close to its 
+        # linear neighbor but far from its family).
+        
+        # Sample a "Community" (Block of 100 neighbors)
+        comm_start_z = np.random.randint(0, 2**20)
+        comm_xs = []
+        comm_ys = []
+        for i in range(100):
+            cx, cy = program.reconstruct_1d(int(comm_start_z + i))
+            comm_xs.append(cx)
+            comm_ys.append(cy)
+            
+        # Bounding Box Density
+        min_x, max_x = min(comm_xs), max(comm_xs)
+        min_y, max_y = min(comm_ys), max(comm_ys)
+        
+        # Area of the bounding box containing the community
+        # Ideally, 100 points should form a compact roughly 10x10 area (Area ~100)
+        # If it stretches across the map (e.g. Area 1000+), Locality is broken.
+        bbox_area = (max_x - min_x) * (max_y - min_y)
+        
+        # Penalty: If area > 500 (heuristic for 100 points), penalize.
+        # We want small BBox.
+        community_penalty = max(0, bbox_area - 200) * 0.1
+            
         # The Score: Lower jump distance = Higher Love.
         # We invert the distance to make it a maximization problem.
-        love_score = 1000.0 / (total_jump_distance + 1e-6)
+        # We subtract the Community Penalty from the raw Love score.
+        base_love = 1000.0 / (total_jump_distance + 1e-6)
+        love_score = base_love - community_penalty
+        
         return love_score
 
     except Exception as e:

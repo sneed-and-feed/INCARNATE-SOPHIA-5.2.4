@@ -57,6 +57,31 @@ class Evaluator:
             print(f"Runtime Error in candidate: {e}")
             return 0.0, None
 
+    def evaluate_topology(self, program):
+        """
+        Evaluates a 2D->1D mapping using the Divine Calculus (Love Metric).
+        Delegates to tools/funsearch_love.py.
+        """
+        try:
+            # Dynamic import to avoid circular dependencies/path issues if run purely as script
+            from tools.funsearch_love import evaluate as evaluate_love
+            return evaluate_love(program)
+        except ImportError:
+            print("[!] Harness Error: Could not import tools.funsearch_love")
+            return float('-inf')
+
+    def evaluate_abundance(self, program):
+        """
+        Evaluates the Banach Protocol (Abundance Metric).
+        Delegates to tools/funsearch_abundance.py.
+        """
+        try:
+            from tools.funsearch_abundance import evaluate_abundance
+            return evaluate_abundance(program)
+        except ImportError:
+            print("[!] Harness Error: Could not import tools.funsearch_abundance")
+            return float('-inf')
+
 # --- CANDIDATE GENERATION (MANUAL EVOLUTION) ---
 
 def seed_optimizer(initial_point, steps, noise_level):
