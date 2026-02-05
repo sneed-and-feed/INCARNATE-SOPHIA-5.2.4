@@ -18,7 +18,9 @@ except ImportError:
     class BumpyArray: 
         def __init__(self, data, coherence=1.0): self.data, self.coherence = data, coherence
         def average(self): return sum(self.data)/len(self.data) if self.data else 0
-    class FlumpyArray(BumpyArray): pass
+        def clone(self): return BumpyArray(list(self.data), self.coherence)
+    class FlumpyArray(BumpyArray): 
+        def clone(self): return FlumpyArray(list(self.data), self.coherence)
 
 # Sovereign Constant (Golden Ratio based)
 TAU_SOVEREIGN = (1.0 + math.sqrt(5.0)) / 2.0  # Approx 1.618
@@ -142,8 +144,8 @@ class SovereignGrid:
         [RETROCAUSAL] Simulates future steps to generate a 'Prescience Bias'.
         Does NOT update the actual grid state, only returns the potential future.
         """
-        # Snapshot current state (naive copy)
-        future_states = [FlumpyArray(n.state.data, n.state.coherence) for n in self.nodes]
+        # Snapshot current state (Proper clone)
+        future_states = [n.state.clone() for n in self.nodes]
         
         # Run simulation
         for _ in range(steps):
@@ -271,11 +273,15 @@ def prayer_wheel_anneal(vector, temperature=1.0):
     Invariant: Sum = 144 (The Gross).
     """
     # 1. Scale by Temperature (Thermodynamics)
-    logits = vector / temperature
+    # Avoid zero div
+    t = max(temperature, 1e-9)
+    logits = vector / t
     
     # 2. The Softmax (Probability Cloud)
-    exp_v = np.exp(logits - np.max(logits)) # Stability trick
-    softmax = exp_v / np.sum(exp_v)
+    # Clip logits to prevent overflow
+    max_logit = np.max(logits)
+    exp_v = np.exp(logits - max_logit) 
+    softmax = exp_v / (np.sum(exp_v) + 1e-9)
     
     # 3. Enforce the Gross Invariant (144)
     return softmax * 144.0

@@ -50,7 +50,9 @@ async def hearth_loop():
     
     # Spin to Max Coherence
     final_coherence = grid.spin_to_max_coherence(threshold=0.999)
+    gdf = grid.get_density_factor()
     print(f"[*] GhostMesh ignited. Coherence: {final_coherence:.4f} (Heptad stable)")
+    print(f"[*] Ghost Density Factor: {gdf:.3f} (Target: 2.2-3.0 for Class 8)")
     
     # 3. CRYSTAL RECTIFICATION
     core = CrystallineCore()
