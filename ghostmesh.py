@@ -20,7 +20,7 @@ except ImportError:
         def average(self): return sum(self.data)/len(self.data) if self.data else 0
         def clone(self): return BumpyArray(list(self.data), self.coherence)
     class FlumpyArray(BumpyArray): 
-        def clone(self): return FlumpyArray(list(self.data), self.coherence)
+        def clone(self): return FlumpyArray(self.data.copy(), self.coherence)
 
 # Sovereign Constant (Golden Ratio based)
 TAU_SOVEREIGN = (1.0 + math.sqrt(5.0)) / 2.0  # Approx 1.618
