@@ -76,6 +76,9 @@ class SophiaMind:
         self.MAX_MEMORY_DEPTH = 5 # Tactical 4k context limit
         self.interaction_cycles = 0 # Count for Rituals (42)
         self.user_name = "User" # Default Identity
+        
+        # [ARIADNE THREAD] Restore lightweight past
+        self._load_ariadne_thread()
 
     # --- LAZY LOADERS (Weakness #1 Fix) ---
     @property
@@ -181,9 +184,42 @@ class SophiaMind:
                 self._laser = None
         return self._laser
 
+    # --- ARIADNE THREAD (Persistence) ---
+    def _save_ariadne_thread(self):
+        """Persists identity and milestones."""
+        user_data = {
+            "name": self.user_name,
+            "roleplay": self.cat_filter.active_roleplay
+        }
+        self.lethe.save_breadcrumbs(user_data)
+
+    def _load_ariadne_thread(self):
+        """Restores identity and milestones."""
+        crumbs = self.lethe.load_breadcrumbs()
+        if not crumbs: return
+        
+        user_data = crumbs.get("user_data", {})
+        self.user_name = user_data.get("name", "User")
+        
+        role = user_data.get("roleplay")
+        if role:
+            self.cat_filter.set_roleplay(role)
+            self.vibe.print_system(f"Restored Persona: {role}", tag="ARIADNE")
+        
+        milestones = crumbs.get("milestones", [])
+        if milestones:
+            self.lethe.long_term_graph = milestones
+            self.vibe.print_system(f"Ariadne Thread secured with {len(milestones)} memories.", tag="ARIADNE")
+
     # --- METABOLISM (Weakness #2 Fix) ---
-    def _metabolize_memory(self):
-        """Prunes memory to prevent context bloat/collapse."""
+    def _metabolize_memory(self, last_interaction=None):
+        """Prunes memory and updates Ariadne Thread milestones."""
+        if last_interaction:
+            # Promote interesting shifts to Breadcrumbs
+            promoted = self.lethe.metabolize(last_interaction)
+            if promoted:
+                self._save_ariadne_thread()
+
         if len(self.memory_bank) > self.MAX_MEMORY_DEPTH:
             # In Class 7, we will summarize. For now, we prune the tail.
             pruned = len(self.memory_bank) - self.MAX_MEMORY_DEPTH
@@ -889,8 +925,8 @@ Verdict: {cat}
         self.memory_bank.append({"content": user_input, "meta": "user"})
         self.memory_bank.append({"content": final_response, "meta": "Cat Logic"})
         
-        # CRITICAL: Prune memory to prevent collapse
-        self._metabolize_memory()
+        # CRITICAL: Prune memory and save breadcrumbs
+        self._metabolize_memory(last_interaction={"content": final_response, "meta": "Cat Logic"})
         
         # [LASER INTEGRATION] FEED THE PROPHECY ENGINE
         if self.laser:

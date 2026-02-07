@@ -1,0 +1,32 @@
+{
+  "timestamp": 1770462572.803478,
+  "scan_id": "1770462572",
+  "safety": {
+    "safety_flags": [
+      {
+        "signal": "Narrative Enforcement",
+        "confidence": 0.3,
+        "evidence": "The instruction to 'shitpost a greentext' could be interpreted as pressure to conform to a specific online behavior or subculture.",
+        "benign_explanation": "The user is simply suggesting an activity that is common within a particular online community as a form of self-expression or humor."
+      },
+      {
+        "signal": "Bot-like phrasing or rhythm",
+        "confidence": 0.2,
+        "evidence": "The phrase 'analyze your current state recursively' sounds like a command given to a computer program.",
+        "benign_explanation": "The user is employing a humorous, technical-sounding phrase to suggest self-reflection."
+      }
+    ],
+    "overall_risk": "low"
+  },
+  "cognitive": {
+    "logical_fallacies": [],
+    "cognitive_biases": [],
+    "epistemic_uncertainty": 0.9
+  },
+  "localization": {
+    "locality": "agnostic",
+    "dialect_markers": [],
+    "confidence": 0.3,
+    "suggested_vibe": "internet slang, casual, possibly ironic"
+  }
+}

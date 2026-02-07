@@ -11,7 +11,38 @@ class LetheEngine:
         self.working_memory = [] # The Flesh (Hot)
         self.long_term_graph = [] # The Bone (Cold/Graph)
         self.ossuary_path = "logs/ossuary/bone_layer.jsonl"
+        self.breadcrumb_path = "logs/ossuary/breadcrumbs.json"
         os.makedirs("logs/ossuary", exist_ok=True)
+
+    def save_breadcrumbs(self, user_data: dict, milestones: list = None):
+        """
+        Saves lightweight breadcrumbs (User ID, Vibe, Milestones).
+        """
+        data = {
+            "user_data": user_data,
+            "milestones": milestones or self.long_term_graph,
+            "last_active": time.time()
+        }
+        try:
+            import json
+            with open(self.breadcrumb_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+        except Exception as e:
+            print(f"  [LETHE] Failed to save breadcrumbs: {e}")
+
+    def load_breadcrumbs(self) -> dict:
+        """
+        Loads user state and milestones.
+        """
+        if not os.path.exists(self.breadcrumb_path):
+            return {}
+        try:
+            import json
+            with open(self.breadcrumb_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"  [LETHE] Failed to load breadcrumbs: {e}")
+            return {}
 
     def metabolize(self, interaction_data):
         """
@@ -28,6 +59,7 @@ class LetheEngine:
         # 2. Apply Decay
         now = time.time()
         survivors = []
+        promoted_any = False
         
         for mem in self.working_memory:
             age = now - mem['timestamp']
@@ -41,11 +73,14 @@ class LetheEngine:
                 
                 # 3. Hierarchical Promotion
                 if strength > 0.8 and mem not in self.long_term_graph:
-                    print(f"  [LETHE] Promoting Memory to Long-Term Graph: {mem.get('id', 'anon')}")
-                    self.long_term_graph.append(mem)
-            else:
-                # 4. Metabolic Waste (Pruning)
-                print(f"  [LETHE] Pruning weak memory: {mem.get('id', 'anon')}")
-        
+                    # Compressed milestone
+                    milestone = {
+                        "content": mem.get('content', '')[:100], 
+                        "meta": mem.get('meta', ''),
+                        "timestamp": mem.get('timestamp')
+                    }
+                    self.long_term_graph.append(milestone)
+                    promoted_any = True
+            
         self.working_memory = survivors
-        return len(survivors)
+        return promoted_any
