@@ -216,7 +216,7 @@ class SovereigntyMonitor:
                 }
             ]
             from tools.sophia_vibe_check import SophiaVibe
-from sophia.theme import SOVEREIGN_CONSOLE
+            from sophia.theme import SOVEREIGN_CONSOLE
             ev = random.choice(events)
             vibe = SophiaVibe()
             vibe.print_system(f"{ev['name']}: {ev['effect']}", tag="GLITCH")

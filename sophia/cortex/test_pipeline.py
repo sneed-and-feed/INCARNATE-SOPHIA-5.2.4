@@ -5,9 +5,9 @@ DESCRIPTION:
     Pipeline: Input -> Tokenizer -> Prism -> Loom -> Output.
 """
 
-from tokenizer_of_tears import TokenizerOfTears
-from prism_vsa import PrismEngine
-from loom_renderer import LoomEngine
+from sophia.cortex.tokenizer_of_tears import TokenizerOfTears
+from sophia.cortex.prism_vsa import PrismEngine
+from sophia.cortex.loom_renderer import LoomEngine
 
 def run_pipeline_test():
     print("### [ SOPHIA 5.2: CRYSTALLINE CORE TEST ]")
