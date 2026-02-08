@@ -32,7 +32,10 @@ class GeminiClient:
             try:
                 from dotenv import load_dotenv
                 load_dotenv()
-                self.api_key = os.getenv("SOPHIA_API_KEY") or os.getenv("GOOGLE_AI_KEY")
+                self.api_key = (os.getenv("SOPHIA_API_KEY") or 
+                                os.getenv("GOOGLE_AI_KEY") or 
+                                os.getenv("GOOGLE_API_KEY") or
+                                os.getenv("OPENAI_API_KEY"))
             except ImportError:
                 pass
             

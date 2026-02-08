@@ -21,7 +21,13 @@ def print_banner():
     console.print(Panel(banner_text, border_style=STAR_STUFF, title="[bold white]SOPHIA 5.0[/]"))
 
 def check_env():
-    # Check all keys the GeminiClient supports
+    # Try loading from .env if present
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
+
     keys = ["SOPHIA_API_KEY", "GOOGLE_AI_KEY", "GOOGLE_API_KEY"]
     api_key = any(os.getenv(k) for k in keys)
     
